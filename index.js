@@ -12,6 +12,10 @@ let stackPlayTimes = createPlayTimes(47, 60, 5327);
 // Function to create and populate play times based on start, interval, and end
 function createPlayTimes(start, interval, end) {
     const playTimes = []; // Array to hold generated play times
+    if (start < 0 || interval <= 0 || end < start) {
+        console.error("Invalid parameters for play times."); // Log an error if parameters are invalid
+        return playTimes; // Return an empty array if parameters are invalid
+    }
     for (let i = start; i <= end; i += interval) {
         playTimes.push(i); // Add each generated time to the array
     }
