@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sound Time Intervals</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        input {
+            margin: 10px;
+        }
+
+        button {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Set Sound Time Intervals</h1>
+    <label>Fountain Time Intervals (comma separated):</label><br>
+    <input type="text" id="fountainInput" value="80, 170, 260" placeholder="e.g. 80, 170, 260"><br>
+
+    <label>File Time Intervals (comma separated):</label><br>
+    <input type="text" id="fileInput" value="390, 810, 1230" placeholder="e.g. 390, 810, 1230"><br>
+
+    <label>Stack Time Intervals (comma separated):</label><br>
+    <input type="text" id="stackInput" value="47, 107, 167" placeholder="e.g. 47, 107, 167"><br>
+
+    <label>Pull Time Intervals (comma separated):</label><br>
+    <input type="text" id="pullInput" value="98, 158, 218" placeholder="e.g. 98, 158, 218"><br>
+
+    <button onclick="saveIntervals()">Save Intervals</button>
+    <button onclick="startSounds()">Start Sounds</button>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        function saveIntervals() {
+            const fountainIntervals = document.getElementById('fountainInput').value.split(',').map(Number);
+            const fileIntervals = document.getElementById('fileInput').value.split(',').map(Number);
+            const stackIntervals = document.getElementById('stackInput').value.split(',').map(Number);
+            const pullIntervals = document.getElementById('pullInput').value.split(',').map(Number);
+
+            // Send intervals to the main process
+            ipcRenderer.send('save-intervals', { fountainIntervals, fileIntervals, stackIntervals, pullIntervals });
+        }
+
+        function startSounds() {
+            ipcRenderer.send('start-sounds');
+        }
+    </script>
+</body>
+</html>

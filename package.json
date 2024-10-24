@@ -1,27 +1,17 @@
 {
-  "name": "dota2-gsi",
-  "version": "1.0.2",
-  "description": "Dota 2 Game State Integration server",
-  "author": "xzion",
-  "license": "MIT",
+  "name": "dota2-gsi-app",
+  "version": "1.0.0",
+  "description": "Dota reminder",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "bin": {
+    "dota2-gsi-app": "./index.js"
   },
-  "keywords": [
-    "dota",
-    "dota2",
-    "gamestate",
-    "integration",
-    "steam"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/xzion/dota2-gsi"
+  "scripts": {
+    "start": "electron ."
   },
   "dependencies": {
-    "express": "4.x.x",
-    "body-parser": "1.x.x",
-    "events": "1.x.x"
+    "dota2-gsi": "^1.0.2",
+    "electron": "^33.0.1",
+    "sound-play": "^1.1.0"
   }
 }
