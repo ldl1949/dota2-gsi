@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,45 +10,104 @@
 
         input {
             margin: 10px;
+            width: 100px;
         }
 
         button {
             margin: 10px;
         }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+        }
+            /* Flexbox for horizontal alignment */
+            .input-row label {
+                margin-right: 5px;
+            }
+        /* Space between label and input */
     </style>
 </head>
 <body>
     <h1>Set Sound Time Intervals</h1>
-    <label>Fountain Time Intervals (comma separated):</label><br>
-    <input type="text" id="fountainInput" value="80, 170, 260" placeholder="e.g. 80, 170, 260"><br>
 
-    <label>File Time Intervals (comma separated):</label><br>
-    <input type="text" id="fileInput" value="390, 810, 1230" placeholder="e.g. 390, 810, 1230"><br>
+    <h2>Fountain</h2>
+    <div class="input-row">
+        <label>Start Time:</label>
+        <input type="number" id="fountainStart" placeholder="e.g. 80">
+        <label>Interval:</label>
+        <input type="number" id="fountainInterval" placeholder="e.g. 90">
+        <label>End Time:</label>
+        <input type="number" id="fountainEnd" placeholder="e.g. 4580">
+    </div>
 
-    <label>Stack Time Intervals (comma separated):</label><br>
-    <input type="text" id="stackInput" value="47, 107, 167" placeholder="e.g. 47, 107, 167"><br>
+    <h2>File</h2>
+    <div class="input-row">
+        <label>Start Time:</label>
+        <input type="number" id="fileStart" placeholder="e.g. 390">
+        <label>Interval:</label>
+        <input type="number" id="fileInterval" placeholder="e.g. 420">
+        <label>End Time:</label>
+        <input type="number" id="fileEnd" placeholder="e.g. 21390">
+    </div>
 
-    <label>Pull Time Intervals (comma separated):</label><br>
-    <input type="text" id="pullInput" value="98, 158, 218" placeholder="e.g. 98, 158, 218"><br>
+    <h2>Pull</h2>
+    <div class="input-row">
+        <label>Start Time:</label>
+        <input type="number" id="pullStart" placeholder="e.g. 98">
+        <label>Interval:</label>
+        <input type="number" id="pullInterval" placeholder="e.g. 60">
+        <label>End Time:</label>
+        <input type="number" id="pullEnd" placeholder="e.g. 6758">
+    </div>
+
+    <h2>Stack</h2>
+    <div class="input-row">
+        <label>Start Time:</label>
+        <input type="number" id="stackStart" placeholder="e.g. 47">
+        <label>Interval:</label>
+        <input type="number" id="stackInterval" placeholder="e.g. 60">
+        <label>End Time:</label>
+        <input type="number" id="stackEnd" placeholder="e.g. 5327">
+    </div>
 
     <button onclick="saveIntervals()">Save Intervals</button>
     <button onclick="startSounds()">Start Sounds</button>
 
     <script>
-        const { ipcRenderer } = require('electron');
+        const { ipcRenderer } = require('electron'); // Import the ipcRenderer module from Electron
 
+        // Function to save intervals when the "Save Intervals" button is pressed
         function saveIntervals() {
-            const fountainIntervals = document.getElementById('fountainInput').value.split(',').map(Number);
-            const fileIntervals = document.getElementById('fileInput').value.split(',').map(Number);
-            const stackIntervals = document.getElementById('stackInput').value.split(',').map(Number);
-            const pullIntervals = document.getElementById('pullInput').value.split(',').map(Number);
+            // Collect start, interval, and end values for each category
+            const fountainStart = Number(document.getElementById('fountainStart').value);
+            const fountainInterval = Number(document.getElementById('fountainInterval').value);
+            const fountainEnd = Number(document.getElementById('fountainEnd').value);
 
-            // Send intervals to the main process
-            ipcRenderer.send('save-intervals', { fountainIntervals, fileIntervals, stackIntervals, pullIntervals });
+            const fileStart = Number(document.getElementById('fileStart').value);
+            const fileInterval = Number(document.getElementById('fileInterval').value);
+            const fileEnd = Number(document.getElementById('fileEnd').value);
+
+            const pullStart = Number(document.getElementById('pullStart').value);
+            const pullInterval = Number(document.getElementById('pullInterval').value);
+            const pullEnd = Number(document.getElementById('pullEnd').value);
+
+            const stackStart = Number(document.getElementById('stackStart').value);
+            const stackInterval = Number(document.getElementById('stackInterval').value);
+            const stackEnd = Number(document.getElementById('stackEnd').value);
+
+            // Send the collected values to the main process
+            ipcRenderer.send('save-intervals', {
+                fountain: { start: fountainStart, interval: fountainInterval, end: fountainEnd },
+                file: { start: fileStart, interval: fileInterval, end: fileEnd },
+                pull: { start: pullStart, interval: pullInterval, end: pullEnd },
+                stack: { start: stackStart, interval: stackInterval, end: stackEnd }
+            });
         }
 
+        // Function to start playing sounds when the "Start Sounds" button is pressed
         function startSounds() {
-            ipcRenderer.send('start-sounds');
+            ipcRenderer.send('start-sounds'); // Notify main process to start sound events
         }
     </script>
 </body>
