@@ -8,52 +8,65 @@
             font-family: Arial, sans-serif;
         }
 
+        table {
+            margin: 20px auto; /* Center the table */
+            border-collapse: collapse; /* Merge table borders */
+        }
+
+        th, td {
+            padding: 10px; /* Padding for table cells */
+            text-align: left; /* Align text to the left */
+        }
+
         input {
-            margin: 10px;
+            width: 80px; /* Width for input boxes */
         }
 
         button {
-            margin: 10px;
+            margin: 10px; /* Margin for buttons */
         }
     </style>
 </head>
 <body>
-    <h1>Set Sound Time Intervals</h1>
+    <h1 style="text-align:center;">Set Sound Time Intervals</h1>
 
-    <!-- Input fields for fountain times -->
-    <label>Fountain Start Time:</label>
-    <input type="number" id="fountainStart" value="80" placeholder="Start Time if not enter equal 80">
-    <label>Interval:</label>
-    <input type="number" id="fountainInterval" value="90" placeholder="Interval">
-    <label>End Time:</label>
-    <input type="number" id="fountainEnd" value="4580" placeholder="End Time"><br>
+    <table border="1">
+        <tr>
+            <th>Type</th>
+            <th>Start Time</th>
+            <th>Interval</th>
+            <th>End Time</th>
+        </tr>
+        <tr>
+            <td>Fountain</td>
+            <td><input type="number" id="fountainStart" value="80" placeholder="Start Time"></td>
+            <td><input type="number" id="fountainInterval" value="90" placeholder="Interval"></td>
+            <td><input type="number" id="fountainEnd" value="4580" placeholder="End Time"></td>
+        </tr>
+        <tr>
+            <td>Wisdom Stone</td> <!-- Changed from "File" to "Wisdom Stone" -->
+            <td><input type="number" id="fileStart" value="390" placeholder="Start Time"></td>
+            <td><input type="number" id="fileInterval" value="420" placeholder="Interval"></td>
+            <td><input type="number" id="fileEnd" value="21390" placeholder="End Time"></td>
+        </tr>
+        <tr>
+            <td>Pull</td>
+            <td><input type="number" id="pullStart" value="98" placeholder="Start Time"></td>
+            <td><input type="number" id="pullInterval" value="60" placeholder="Interval"></td>
+            <td><input type="number" id="pullEnd" value="6758" placeholder="End Time"></td>
+        </tr>
+        <tr>
+            <td>Stack</td>
+            <td><input type="number" id="stackStart" value="47" placeholder="Start Time"></td>
+            <td><input type="number" id="stackInterval" value="60" placeholder="Interval"></td>
+            <td><input type="number" id="stackEnd" value="5327" placeholder="End Time"></td>
+        </tr>
+    </table>
 
-    <!-- Input fields for file times -->
-    <label>File Start Time:</label>
-    <input type="number" id="fileStart" value="390" placeholder="Start Time">
-    <label>Interval:</label>
-    <input type="number" id="fileInterval" value="420" placeholder="Interval">
-    <label>End Time:</label>
-    <input type="number" id="fileEnd" value="21390" placeholder="End Time"><br>
-
-    <!-- Input fields for pull times -->
-    <label>Pull Start Time:</label>
-    <input type="number" id="pullStart" value="98" placeholder="Start Time">
-    <label>Interval:</label>
-    <input type="number" id="pullInterval" value="60" placeholder="Interval">
-    <label>End Time:</label>
-    <input type="number" id="pullEnd" value="6758" placeholder="End Time"><br>
-
-    <!-- Input fields for stack times -->
-    <label>Stack Start Time:</label>
-    <input type="number" id="stackStart" value="47" placeholder="Start Time">
-    <label>Interval:</label>
-    <input type="number" id="stackInterval" value="60" placeholder="Interval">
-    <label>End Time:</label>
-    <input type="number" id="stackEnd" value="5327" placeholder="End Time"><br>
-
-    <button onclick="saveIntervals()">Save Intervals</button>
-    <button onclick="startSounds()">Start Sounds</button>
+    <div style="text-align:center;">
+        <button onclick="saveIntervals()">Save Intervals</button>
+        <button onclick="startSounds()">Start Sounds</button>
+    </div>
 
     <script>
         const { ipcRenderer } = require('electron');
