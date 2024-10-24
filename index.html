@@ -22,7 +22,7 @@
 
     <!-- Input fields for fountain times -->
     <label>Fountain Start Time:</label>
-    <input type="number" id="fountainStart" value="80" placeholder="Start Time">
+    <input type="number" id="fountainStart" value="80" placeholder="Start Time if not enter equal 80">
     <label>Interval:</label>
     <input type="number" id="fountainInterval" value="90" placeholder="Interval">
     <label>End Time:</label>
@@ -60,26 +60,26 @@
 
         // Function to save intervals
         function saveIntervals() {
-            // Get values from the input fields
+            // Get values from the input fields or use default if empty
             const fountainIntervals = {
-                start: Number(document.getElementById('fountainStart').value),
-                interval: Number(document.getElementById('fountainInterval').value),
-                end: Number(document.getElementById('fountainEnd').value),
+                start: Number(document.getElementById('fountainStart').value) || 80,
+                interval: Number(document.getElementById('fountainInterval').value) || 90,
+                end: Number(document.getElementById('fountainEnd').value) || 4580,
             };
             const fileIntervals = {
-                start: Number(document.getElementById('fileStart').value),
-                interval: Number(document.getElementById('fileInterval').value),
-                end: Number(document.getElementById('fileEnd').value),
+                start: Number(document.getElementById('fileStart').value) || 390,
+                interval: Number(document.getElementById('fileInterval').value) || 420,
+                end: Number(document.getElementById('fileEnd').value) || 21390,
             };
             const pullIntervals = {
-                start: Number(document.getElementById('pullStart').value),
-                interval: Number(document.getElementById('pullInterval').value),
-                end: Number(document.getElementById('pullEnd').value),
+                start: Number(document.getElementById('pullStart').value) || 98,
+                interval: Number(document.getElementById('pullInterval').value) || 60,
+                end: Number(document.getElementById('pullEnd').value) || 6758,
             };
             const stackIntervals = {
-                start: Number(document.getElementById('stackStart').value),
-                interval: Number(document.getElementById('stackInterval').value),
-                end: Number(document.getElementById('stackEnd').value),
+                start: Number(document.getElementById('stackStart').value) || 47,
+                interval: Number(document.getElementById('stackInterval').value) || 60,
+                end: Number(document.getElementById('stackEnd').value) || 5327,
             };
 
             // Send intervals to the main process
