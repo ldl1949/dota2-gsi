@@ -1,0 +1,22 @@
+{
+  "fountain": {
+    "start": 4,
+    "interval": 10,
+    "end": 4580
+  },
+  "file": {
+    "start": 390,
+    "interval": 420,
+    "end": 21390
+  },
+  "pull": {
+    "start": 98,
+    "interval": 60,
+    "end": 6758
+  },
+  "stack": {
+    "start": 47,
+    "interval": 60,
+    "end": 5327
+  }
+}

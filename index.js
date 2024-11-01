@@ -5,9 +5,8 @@ const sound = require('sound-play');
 const { exec } = require('child_process');
 const fs = require('fs');
 
+// #region My Region
 
-
-console.log("Starting the exec call...");
 
 // Function to check and create the configuration file
 function checkAndCreateConfigFile(dotaPath) {
@@ -132,6 +131,9 @@ async function findDota2Path() {
 
 // Execute the function to find Dota 2 path
 findDota2Path();
+
+// #endregion
+
 
 // Initialize arrays with default values
 let fountainPlayTimes = createPlayTimes(80, 90, 4580);
