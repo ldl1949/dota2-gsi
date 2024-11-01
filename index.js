@@ -2,6 +2,30 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const d2gsi = require('dota2-gsi');
 const sound = require('sound-play');
+const fs = require('fs');
+const { exec } = require('child_process');
+
+
+console.log("Starting the exec call...");
+
+exec('node findDota2Path.js', (error, stdout, stderr) => {
+    console.log("Exec call completed.");
+    if (error) {
+        console.error(`Error: ${error.message}`);
+        return;
+    }
+    if (stderr) {
+        console.error(`Standard Error: ${stderr}`);
+    }
+    // Print the output from findDota2Path.js
+    console.log(`Dota 2 Path Output:\n${stdout}`);
+});
+
+console.log("This will print immediately after the exec call is initiated.");
+
+
+
+
 
 // Initialize arrays with default values
 let fountainPlayTimes = createPlayTimes(80, 90, 4580);
@@ -18,8 +42,10 @@ function createPlayTimes(start, interval, end) {
     return playTimes; // Return the populated play times array
 }
 
+
 // IPC listener for saving intervals from the renderer process
 ipcMain.on('save-intervals', (event, intervals) => {
+    console.log('Saving files')
     // Create play times based on user input only if they differ from defaults
     const newFountainTimes = createPlayTimes(intervals.fountain.start, intervals.fountain.interval, intervals.fountain.end);
     const newFileTimes = createPlayTimes(intervals.file.start, intervals.file.interval, intervals.file.end);
@@ -89,16 +115,17 @@ ipcMain.on('start-sounds', () => {
 // Function to create the main application window
 function createWindow() {
     const win = new BrowserWindow({
-        width: 600,
-        height: 400,
+        width: 800,
+        height: 600,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'), // Load preload script for secure context
-            nodeIntegration: true, // Enable Node.js integration
-            contextIsolation: false // Disable context isolation
-        }
+            preload: path.join(__dirname, 'preload.js'), // Ensure you have preload script if using contextIsolation
+            contextIsolation: true,
+            enableRemoteModule: false,
+            nodeIntegration: true, // Set to true for file I/O
+        },
     });
 
-    win.loadFile('index.html'); // Load the HTML file for the application
+    win.loadFile('index.html');
 }
 
 // When the app is ready, create the main window
