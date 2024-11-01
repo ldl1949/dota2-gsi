@@ -11,7 +11,7 @@
             margin: 5px;
             width: 120px;
         }
-        /* Adjusted input width */
+
         button {
             margin: 5px;
         }
@@ -62,11 +62,11 @@
         </tr>
     </table>
 
-    <button onclick="saveIntervals()">Save Intervals</button>
-    <button onclick="startSounds()">Start Sounds</button>
-    <button onclick="saveProfile()">Save Profile</button>
-    <button onclick="loadProfile()">Load Profile</button>
-    <button onclick="revertToDefault()">Revert to Default</button>
+    <button id="saveIntervalsButton">Save Intervals</button>
+    <button id="startSoundsButton">Start Sounds</button>
+    <button id="saveProfileButton">Save Profile</button>
+    <button id="loadProfileButton">Load Profile</button>
+    <button id="revertToDefaultButton">Revert to Default</button>
 
     <script>
         const { ipcRenderer } = require('electron');
@@ -75,7 +75,7 @@
 
         // Function to save the current intervals
         function saveIntervals() {
-            alert(`Running saveIntervals.`);
+            console.log('saveIntervals called');
             const fountainIntervals = {
                 start: Number(document.getElementById('fountainStart').value) || 80,
                 interval: Number(document.getElementById('fountainInterval').value) || 90,
@@ -103,20 +103,18 @@
 
         // Function to start sounds
         function startSounds() {
+            console.log('startSounds called');
             ipcRenderer.send('start-sounds');
         }
 
         // Function to save the profile to disk
         function saveProfile() {
-            console.log('Save Intervals button clicked!');
-            alert(`About to save profile "${profileName}".`);
+            console.log('Save Profile button clicked!');
             const profileName = document.getElementById('profileName').value;
             if (!profileName) {
                 alert('Please enter a profile name.');
                 return;
             }
-
-           
 
             const profileData = {
                 fountain: {
@@ -142,9 +140,6 @@
             };
 
             const filePath = path.join(__dirname, `${profileName}.json`);
-            alert(`File will be saved to "${filePath}".`);
-
-
             fs.writeFileSync(filePath, JSON.stringify(profileData, null, 2));
             alert(`Profile "${profileName}" saved successfully.`);
         }
@@ -158,7 +153,6 @@
             }
 
             const filePath = path.join(__dirname, `${profileName}.json`);
-
             if (!fs.existsSync(filePath)) {
                 alert(`Profile "${profileName}" not found.`);
                 return;
@@ -183,9 +177,6 @@
             document.getElementById('stackInterval').value = profileData.stack.interval;
             document.getElementById('stackEnd').value = profileData.stack.end;
 
-            // Recreate the playtime lists based on loaded values
-            createPlayTimes();
-
             // Log the loaded profile details
             console.log(`Profile "${profileName}" loaded successfully:`, profileData);
         }
@@ -208,61 +199,15 @@
             document.getElementById('stackInterval').value = 60;
             document.getElementById('stackEnd').value = 5327;
 
-            // Recreate the playtime lists based on default values
-            createPlayTimes();
+            console.log('Reverted to default values.');
         }
 
-        // Function to create play times
-        function createPlayTimes() {
-            // Initialize empty arrays for play times
-            fountainPlayTimes = [];
-            filePlayTimes = [];
-            pullPlayTimes = [];
-            stackPlayTimes = [];
-
-            // Get the values from the input fields
-            const fountainStart = Number(document.getElementById('fountainStart').value) || 80;
-            const fountainInterval = Number(document.getElementById('fountainInterval').value) || 90;
-            const fountainEnd = Number(document.getElementById('fountainEnd').value) || 4580;
-
-            const fileStart = Number(document.getElementById('fileStart').value) || 390;
-            const fileInterval = Number(document.getElementById('fileInterval').value) || 420;
-            const fileEnd = Number(document.getElementById('fileEnd').value) || 21390;
-
-            const pullStart = Number(document.getElementById('pullStart').value) || 98;
-            const pullInterval = Number(document.getElementById('pullInterval').value) || 60;
-            const pullEnd = Number(document.getElementById('pullEnd').value) || 6758;
-
-            const stackStart = Number(document.getElementById('stackStart').value) || 47;
-            const stackInterval = Number(document.getElementById('stackInterval').value) || 60;
-            const stackEnd = Number(document.getElementById('stackEnd').value) || 5327;
-
-            // Populate the fountain play times
-            for (let time = fountainStart; time <= fountainEnd; time += fountainInterval) {
-                fountainPlayTimes.push(time);
-            }
-
-            // Populate the wisdom stone play times
-            for (let time = fileStart; time <= fileEnd; time += fileInterval) {
-                filePlayTimes.push(time);
-            }
-
-            // Populate the pull play times
-            for (let time = pullStart; time <= pullEnd; time += pullInterval) {
-                pullPlayTimes.push(time);
-            }
-
-            // Populate the stack play times
-            for (let time = stackStart; time <= stackEnd; time += stackInterval) {
-                stackPlayTimes.push(time);
-            }
-
-            // Print the lists to the console
-            console.log('Fountain Play Times:', fountainPlayTimes);
-            console.log('Wisdom Stone Play Times:', filePlayTimes);
-            console.log('Pull Play Times:', pullPlayTimes);
-            console.log('Stack Play Times:', stackPlayTimes);
-        }
+        // Add event listeners for the buttons
+        document.getElementById('saveIntervalsButton').addEventListener('click', saveIntervals);
+        document.getElementById('startSoundsButton').addEventListener('click', startSounds);
+        document.getElementById('saveProfileButton').addEventListener('click', saveProfile);
+        document.getElementById('loadProfileButton').addEventListener('click', loadProfile);
+        document.getElementById('revertToDefaultButton').addEventListener('click', revertToDefault);
     </script>
 </body>
 </html>
