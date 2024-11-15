@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Dota reminder",
   "main": "index.js",
+  "type": "module",
   "bin": {
     "dota2-gsi-app": "./index.js"
   },
@@ -11,7 +12,9 @@
   },
   "dependencies": {
     "dota2-gsi": "^1.0.2",
-    "electron": "^33.0.1",
+    "electron": "^33.2.0",
+    "electron-settings": "^4.0.4",
+    "open": "^10.1.0",
     "sound-play": "^1.1.0"
   }
 }

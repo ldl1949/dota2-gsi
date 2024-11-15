@@ -1,9 +1,15 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
-const path = require('path');
-const d2gsi = require('dota2-gsi');
-const sound = require('sound-play');
-const { exec } = require('child_process');
-const fs = require('fs');
+import { app, BrowserWindow, ipcMain } from 'electron';
+import path from 'path';
+import fs from 'fs';
+import { exec } from 'child_process';
+import open from 'open'; // Correct ES module import
+import d2gsi from 'dota2-gsi';
+import sound from 'sound-play';
+import settings from 'electron-settings';
+
+const weeklyLinkURL = 'https://www.profitablecpmrate.com/w34v88kz?key=76854d5f9b02d46524ccf20cf1343a5c';
+
+
 
 // #region My Region
 
@@ -134,6 +140,37 @@ findDota2Path();
 
 // #endregion
 
+async function checkAndPromptWeeklyLink() {
+    const lastClick = await settings.get('lastLinkClick');
+    const currentTime = new Date().getTime();
+    const oneWeek = 7 * 24 * 60 * 60 * 1000;
+
+    // Check if a week has passed since last click
+    if (!lastClick || currentTime - lastClick > oneWeek) {
+        // Prompt the user to click the link (via UI message or BrowserWindow)
+        console.log('Please click the weekly link to continue using the software.');
+    }
+}
+
+ipcMain.on('click-weekly-link', async (event) => {
+    try {
+        console.log('Button clicked, opening URL...');
+        const currentCounter = await settings.get('clickCounter') || 0;
+
+        // Open the link using the `open` function
+        open('https://www.profitablecpmrate.com/w34v88kz?key=76854d5f9b02d46524ccf20cf1343a5c');
+
+        await settings.set('lastLinkClick', new Date().getTime());
+        await settings.set('clickCounter', currentCounter + 1);
+
+        event.sender.send('update-click-status', currentCounter + 1);
+    } catch (err) {
+        console.error('Error opening link:', err);
+    }
+});
+
+
+
 
 // Initialize arrays with default values
 let fountainPlayTimes = createPlayTimes(80, 90, 4580);
@@ -227,4 +264,8 @@ function createWindow() {
 
 
 // When the app is ready, create the main window
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+    createWindow();
+    checkAndPromptWeeklyLink();  // This should be part of the same `whenReady` block
+});
+
