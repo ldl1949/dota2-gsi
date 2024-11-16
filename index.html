@@ -3,8 +3,29 @@
 <head>
     <title>Sound Time Intervals</title>
     <style>
+        /* Set the background image for the body */
         body {
             font-family: Arial, sans-serif;
+            background-image: url('./background.png'); /* Path to your image */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            margin: 0;
+            color: white;
+        }
+
+        /* Title block background */
+        h1 {
+            background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black background */
+            padding: 20px;
+            text-align: center;
+            margin: 0;
+            font-size: 2.5em;
+            border-radius: 10px;
+            width: 50%;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         input {
@@ -64,7 +85,7 @@
 
     <h2>Weekly Link Requirement</h2>
     <button id="click-weekly-link-button">Click Weekly Link</button>
-    <p id="counterStatus">Counter: 0</p>
+    <p id="counterStatus">Credits: 0</p>
 
     <button id="saveIntervalsButton">Save Intervals</button>
     <button id="startSoundsButton">Start Sounds</button>

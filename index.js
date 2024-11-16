@@ -256,9 +256,11 @@ function createWindow() {
             enableRemoteModule: true, // Enable remote module if needed
             nodeIntegration: true, // Enable Node.js integration
         },
+    
     });
-
+    win.setMenu(null);
     win.loadFile('index.html'); // Load your HTML file
+
 }
 
 
