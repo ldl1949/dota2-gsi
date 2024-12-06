@@ -169,10 +169,16 @@ ipcMain.on('click-weekly-link', async (event) => {
     }
 });
 
+// Handle uncaught exceptions globally
+process.on("uncaughtException", (error) => {
+    if (error.code === "EADDRINUSE") {
+        console.warn("Port 3000 is already in use. Suppressing the error and continuing...");
+    } else {
+        console.error("Uncaught Exception:", error);
+    }
+});
 
-
-
-// Initialize arrays with default values
+//--------------------------------------------------------------
 let fountainPlayTimes = createPlayTimes(80, 90, 4580);
 let filePlayTimes = createPlayTimes(390, 420, 21390);
 let pullPlayTimes = createPlayTimes(98, 60, 6758);
@@ -187,47 +193,30 @@ function createPlayTimes(start, interval, end) {
     return playTimes;
 }
 
-// IPC listener for saving intervals from the renderer process
-ipcMain.on('save-intervals', (event, intervals) => {
-    console.log('Saving intervals...');
+// Current mode
+let currentMode = 'turbo'; // Default to turbo
 
-    const newFountainTimes = createPlayTimes(intervals.fountain.start, intervals.fountain.interval, intervals.fountain.end);
-    const newFileTimes = createPlayTimes(intervals.file.start, intervals.file.interval, intervals.file.end);
-    const newPullTimes = createPlayTimes(intervals.pull.start, intervals.pull.interval, intervals.pull.end);
-    const newStackTimes = createPlayTimes(intervals.stack.start, intervals.stack.interval, intervals.stack.end);
+// IPC listener for starting sounds based on mode
+ipcMain.on('start-sounds', (event, { mode }) => {
+    console.log(`Switching to ${mode} mode.`);
+    currentMode = mode;
 
-    if (JSON.stringify(newFountainTimes) !== JSON.stringify(fountainPlayTimes)) {
-        fountainPlayTimes = newFountainTimes;
-    }
-    if (JSON.stringify(newFileTimes) !== JSON.stringify(filePlayTimes)) {
-        filePlayTimes = newFileTimes;
-    }
-    if (JSON.stringify(newPullTimes) !== JSON.stringify(pullPlayTimes)) {
-        pullPlayTimes = newPullTimes;
-    }
-    if (JSON.stringify(newStackTimes) !== JSON.stringify(stackPlayTimes)) {
-        stackPlayTimes = newStackTimes;
+    if (mode === 'ranked') {
+        fountainPlayTimes = createPlayTimes(80, 180, 4580); // Change interval to 180
+    } else {
+        fountainPlayTimes = createPlayTimes(80, 90, 4580); // Default intervals for turbo
     }
 
-    console.log('Updated Fountain Play Times:', fountainPlayTimes);
-    console.log('Updated File Play Times:', filePlayTimes);
-    console.log('Updated Pull Play Times:', pullPlayTimes);
-    console.log('Updated Stack Play Times:', stackPlayTimes);
-});
-
-// IPC listener for starting sounds
-ipcMain.on('start-sounds', () => {
-    console.log('Received request to start sounds.');
-    startSoundEvents();
+    startSoundEvents(); // Start listening for Dota 2 events
 });
 
 // Function to start listening for Dota 2 events and play sounds
 function startSoundEvents() {
-    console.log("Starting sound event listener...");
-    const server = new d2gsi(); // Create a new instance of d2gsi
+    console.log(`Starting sound event listener for ${currentMode} mode...`);
+    const server = new d2gsi();
 
     server.events.on('newclient', (client) => {
-        console.log("New client connected.");
+        console.log('New client connected.');
         client.on('map:clock_time', (clock_time) => {
             console.log(`Clock Time: ${clock_time}`);
             if (fountainPlayTimes.includes(clock_time)) {
@@ -252,22 +241,17 @@ function createWindow() {
         width: 800,
         height: 600,
         webPreferences: {
-            contextIsolation: false, // Set to false to allow direct access to Node.js
-            enableRemoteModule: true, // Enable remote module if needed
-            nodeIntegration: true, // Enable Node.js integration
+            contextIsolation: false,
+            enableRemoteModule: true,
+            nodeIntegration: true,
         },
-    
     });
+
     win.setMenu(null);
-    win.loadFile('index.html'); // Load your HTML file
-
+    win.loadFile('index.html');
 }
-
-
 
 // When the app is ready, create the main window
 app.whenReady().then(() => {
     createWindow();
-    checkAndPromptWeeklyLink();  // This should be part of the same `whenReady` block
 });
-

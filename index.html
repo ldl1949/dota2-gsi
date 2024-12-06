@@ -3,7 +3,6 @@
 <head>
     <title>Sound Time Intervals</title>
     <style>
-        /* Set the background image for the body */
         body {
             font-family: Arial, sans-serif;
             background-image: url('./background.png'); /* Path to your image */
@@ -15,9 +14,8 @@
             color: white;
         }
 
-        /* Title block background */
         h1 {
-            background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black background */
+            background-color: rgba(0, 0, 0, 0.6);
             padding: 20px;
             text-align: center;
             margin: 0;
@@ -28,230 +26,41 @@
             margin-right: auto;
         }
 
-        input {
-            margin: 5px;
-            width: 120px;
-        }
-
         button {
-            margin: 5px;
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            cursor: pointer;
         }
 
-        table {
-            margin-top: 20px;
-        }
+            button:hover {
+                background-color: rgba(0, 0, 0, 0.8);
+            }
     </style>
 </head>
 <body>
-    <h1>Set Sound Time Intervals</h1>
-    <table>
-        <tr>
-            <td><label>Profile Name:</label></td>
-            <td><input type="text" id="profileName" placeholder="Enter profile name"></td>
-        </tr>
-        <tr>
-            <td><label>Fountain Start:</label></td>
-            <td><input type="number" id="fountainStart" value="80"></td>
-            <td><label>Interval:</label></td>
-            <td><input type="number" id="fountainInterval" value="90"></td>
-            <td><label>End:</label></td>
-            <td><input type="number" id="fountainEnd" value="4580"></td>
-        </tr>
-        <tr>
-            <td><label>Wisdom Stone Start:</label></td>
-            <td><input type="number" id="fileStart" value="390"></td>
-            <td><label>Interval:</label></td>
-            <td><input type="number" id="fileInterval" value="420"></td>
-            <td><label>End:</label></td>
-            <td><input type="number" id="fileEnd" value="21390"></td>
-        </tr>
-        <tr>
-            <td><label>Pull Start:</label></td>
-            <td><input type="number" id="pullStart" value="98"></td>
-            <td><label>Interval:</label></td>
-            <td><input type="number" id="pullInterval" value="60"></td>
-            <td><label>End:</label></td>
-            <td><input type="number" id="pullEnd" value="6758"></td>
-        </tr>
-        <tr>
-            <td><label>Stack Start:</label></td>
-            <td><input type="number" id="stackStart" value="47"></td>
-            <td><label>Interval:</label></td>
-            <td><input type="number" id="stackInterval" value="60"></td>
-            <td><label>End:</label></td>
-            <td><input type="number" id="stackEnd" value="5327"></td>
-        </tr>
-    </table>
-
-    <h2>Weekly Link Requirement</h2>
-    <button id="click-weekly-link-button">Click Weekly Link</button>
-    <p id="counterStatus">Credits: 0</p>
-
-    <button id="saveIntervalsButton">Save Intervals</button>
-    <button id="startSoundsButton">Start Sounds</button>
-    <button id="saveProfileButton">Save Profile</button>
-    <button id="loadProfileButton">Load Profile</button>
-    <button id="revertToDefaultButton">Revert to Default</button>
+    <h1>Select Game Mode</h1>
+    <button id="rankedButton">Ranked</button>
+    <button id="turboButton">Turbo</button>
 
     <script>
         const { ipcRenderer } = require('electron');
-        const fs = require('fs');
-        const path = require('path');
-        console.log('Renderer script loaded'); // Check if the script is loaded
 
-
-        const button = document.getElementById('click-weekly-link-button');
-        if (button) {
-            console.log('Button found!');
-        } else {
-            console.log('Button not found!');
-        }
-
-        button.addEventListener('click', () => {
-            console.log('Button clicked!');
-            ipcRenderer.send('click-weekly-link');
+        // Event listeners for buttons
+        document.getElementById('rankedButton').addEventListener('click', () => {
+            console.log('Ranked button clicked');
+            ipcRenderer.send('start-sounds', { mode: 'ranked' });
         });
 
-        // Listen for updates from the main process
-        ipcRenderer.on('update-click-status', (event, counter) => {
-            document.getElementById('counterStatus').textContent = `Counter: ${counter}`;
+        document.getElementById('turboButton').addEventListener('click', () => {
+            console.log('Turbo button clicked');
+            ipcRenderer.send('start-sounds', { mode: 'turbo' });
         });
-
-        // Function to save the current intervals
-        function saveIntervals() {
-            console.log('saveIntervals called');
-            const fountainIntervals = {
-                start: Number(document.getElementById('fountainStart').value) || 80,
-                interval: Number(document.getElementById('fountainInterval').value) || 90,
-                end: Number(document.getElementById('fountainEnd').value) || 4580,
-            };
-            const fileIntervals = {
-                start: Number(document.getElementById('fileStart').value) || 390,
-                interval: Number(document.getElementById('fileInterval').value) || 420,
-                end: Number(document.getElementById('fileEnd').value) || 21390,
-            };
-            const pullIntervals = {
-                start: Number(document.getElementById('pullStart').value) || 98,
-                interval: Number(document.getElementById('pullInterval').value) || 60,
-                end: Number(document.getElementById('pullEnd').value) || 6758,
-            };
-            const stackIntervals = {
-                start: Number(document.getElementById('stackStart').value) || 47,
-                interval: Number(document.getElementById('stackInterval').value) || 60,
-                end: Number(document.getElementById('stackEnd').value) || 5327,
-            };
-
-            // Send intervals to the main process
-            ipcRenderer.send('save-intervals', { fountain: fountainIntervals, file: fileIntervals, pull: pullIntervals, stack: stackIntervals });
-        }
-
-        // Function to start sounds
-        function startSounds() {
-            console.log('startSounds called');
-            ipcRenderer.send('start-sounds');
-        }
-
-        // Function to save the profile to disk
-        function saveProfile() {
-            console.log('Save Profile button clicked!');
-            const profileName = document.getElementById('profileName').value;
-            if (!profileName) {
-                alert('Please enter a profile name.');
-                return;
-            }
-
-            const profileData = {
-                fountain: {
-                    start: Number(document.getElementById('fountainStart').value),
-                    interval: Number(document.getElementById('fountainInterval').value),
-                    end: Number(document.getElementById('fountainEnd').value),
-                },
-                file: {
-                    start: Number(document.getElementById('fileStart').value),
-                    interval: Number(document.getElementById('fileInterval').value),
-                    end: Number(document.getElementById('fileEnd').value),
-                },
-                pull: {
-                    start: Number(document.getElementById('pullStart').value),
-                    interval: Number(document.getElementById('pullInterval').value),
-                    end: Number(document.getElementById('pullEnd').value),
-                },
-                stack: {
-                    start: Number(document.getElementById('stackStart').value),
-                    interval: Number(document.getElementById('stackInterval').value),
-                    end: Number(document.getElementById('stackEnd').value),
-                },
-            };
-
-            const filePath = path.join(__dirname, `${profileName}.json`);
-            fs.writeFileSync(filePath, JSON.stringify(profileData, null, 2));
-            alert(`Profile "${profileName}" saved successfully.`);
-        }
-
-        // Function to load a profile from disk
-        function loadProfile() {
-            const profileName = document.getElementById('profileName').value;
-            if (!profileName) {
-                alert('Please enter a profile name.');
-                return;
-            }
-
-            const filePath = path.join(__dirname, `${profileName}.json`);
-            if (!fs.existsSync(filePath)) {
-                alert(`Profile "${profileName}" not found.`);
-                return;
-            }
-
-            const profileData = JSON.parse(fs.readFileSync(filePath));
-
-            // Populate the input fields with the loaded profile data
-            document.getElementById('fountainStart').value = profileData.fountain.start;
-            document.getElementById('fountainInterval').value = profileData.fountain.interval;
-            document.getElementById('fountainEnd').value = profileData.fountain.end;
-
-            document.getElementById('fileStart').value = profileData.file.start;
-            document.getElementById('fileInterval').value = profileData.file.interval;
-            document.getElementById('fileEnd').value = profileData.file.end;
-
-            document.getElementById('pullStart').value = profileData.pull.start;
-            document.getElementById('pullInterval').value = profileData.pull.interval;
-            document.getElementById('pullEnd').value = profileData.pull.end;
-
-            document.getElementById('stackStart').value = profileData.stack.start;
-            document.getElementById('stackInterval').value = profileData.stack.interval;
-            document.getElementById('stackEnd').value = profileData.stack.end;
-
-            // Log the loaded profile details
-            console.log(`Profile "${profileName}" loaded successfully:`, profileData);
-        }
-
-        // Function to revert to default values
-        function revertToDefault() {
-            document.getElementById('fountainStart').value = 80;
-            document.getElementById('fountainInterval').value = 90;
-            document.getElementById('fountainEnd').value = 4580;
-
-            document.getElementById('fileStart').value = 390;
-            document.getElementById('fileInterval').value = 420;
-            document.getElementById('fileEnd').value = 21390;
-
-            document.getElementById('pullStart').value = 98;
-            document.getElementById('pullInterval').value = 60;
-            document.getElementById('pullEnd').value = 6758;
-
-            document.getElementById('stackStart').value = 47;
-            document.getElementById('stackInterval').value = 60;
-            document.getElementById('stackEnd').value = 5327;
-
-            console.log('Reverted to default values.');
-        }
-
-        // Add event listeners for the buttons
-        document.getElementById('saveIntervalsButton').addEventListener('click', saveIntervals);
-        document.getElementById('startSoundsButton').addEventListener('click', startSounds);
-        document.getElementById('saveProfileButton').addEventListener('click', saveProfile);
-        document.getElementById('loadProfileButton').addEventListener('click', loadProfile);
-        document.getElementById('revertToDefaultButton').addEventListener('click', revertToDefault);
     </script>
 </body>
 </html>
