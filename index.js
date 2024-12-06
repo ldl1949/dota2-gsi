@@ -210,7 +210,21 @@ ipcMain.on('start-sounds', (event, { mode }) => {
     startSoundEvents(); // Start listening for Dota 2 events
 });
 
-// Function to start listening for Dota 2 events and play sounds
+// Global state for checkbox states
+let soundEnabled = {
+    fountain: true,
+    wisdom: true,
+    pull: true,
+    stack: true,
+};
+
+// IPC listener for checkbox updates
+ipcMain.on('update-checkboxes', (event, states) => {
+    console.log('Checkbox states updated:', states);
+    soundEnabled = states; // Update global state
+});
+
+// Updated sound event listener
 function startSoundEvents() {
     console.log(`Starting sound event listener for ${currentMode} mode...`);
     const server = new d2gsi();
@@ -219,21 +233,22 @@ function startSoundEvents() {
         console.log('New client connected.');
         client.on('map:clock_time', (clock_time) => {
             console.log(`Clock Time: ${clock_time}`);
-            if (fountainPlayTimes.includes(clock_time)) {
+            if (soundEnabled.fountain && fountainPlayTimes.includes(clock_time)) {
                 sound.play("F:\\Ilan\\DotaListener\\dota2-gsi\\file2.mp3");
             }
-            if (filePlayTimes.includes(clock_time)) {
+            if (soundEnabled.wisdom && filePlayTimes.includes(clock_time)) {
                 sound.play("F:\\Ilan\\DotaListener\\dota2-gsi\\file.mp3");
             }
-            if (stackPlayTimes.includes(clock_time)) {
-                sound.play("F:\\Ilan\\DotaListener\\dota2-gsi\\stack.mp3");
-            }
-            if (pullPlayTimes.includes(clock_time)) {
+            if (soundEnabled.pull && pullPlayTimes.includes(clock_time)) {
                 sound.play("F:\\Ilan\\DotaListener\\dota2-gsi\\pull.mp3");
+            }
+            if (soundEnabled.stack && stackPlayTimes.includes(clock_time)) {
+                sound.play("F:\\Ilan\\DotaListener\\dota2-gsi\\stack.mp3");
             }
         });
     });
 }
+
 
 // Function to create the main application window
 function createWindow() {

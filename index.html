@@ -26,6 +26,32 @@
             margin-right: auto;
         }
 
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .checkbox-container {
+            text-align: left;
+            margin-top: 30px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+            .checkbox-container label {
+                display: block;
+                margin: 10px 0;
+                font-size: 1.2em;
+                background-color: blue; /* Blue background for the text */
+                padding: 5px;
+                border-radius: 5px;
+                color: white; /* White text color */
+            }
+
         button {
             display: block;
             margin: 20px auto;
@@ -45,13 +71,30 @@
 </head>
 <body>
     <h1>Select Game Mode</h1>
-    <button id="rankedButton">Ranked</button>
-    <button id="turboButton">Turbo</button>
+    <div class="button-container">
+        <button id="rankedButton">Ranked</button>
+        <button id="turboButton">Turbo</button>
+    </div>
+
+    <div class="checkbox-container">
+        <label>
+            <input type="checkbox" id="fountainCheckbox" checked> Fountain
+        </label>
+        <label>
+            <input type="checkbox" id="wisdomCheckbox" checked> Wisdom Stone
+        </label>
+        <label>
+            <input type="checkbox" id="pullCheckbox" checked> Pull Camp
+        </label>
+        <label>
+            <input type="checkbox" id="stackCheckbox" checked> Stack
+        </label>
+    </div>
 
     <script>
         const { ipcRenderer } = require('electron');
 
-        // Event listeners for buttons
+        // Event listeners for game mode buttons
         document.getElementById('rankedButton').addEventListener('click', () => {
             console.log('Ranked button clicked');
             ipcRenderer.send('start-sounds', { mode: 'ranked' });
@@ -61,6 +104,22 @@
             console.log('Turbo button clicked');
             ipcRenderer.send('start-sounds', { mode: 'turbo' });
         });
+
+        // Event listeners for checkboxes
+        const updateCheckboxState = () => {
+            const checkboxStates = {
+                fountain: document.getElementById('fountainCheckbox').checked,
+                wisdom: document.getElementById('wisdomCheckbox').checked,
+                pull: document.getElementById('pullCheckbox').checked,
+                stack: document.getElementById('stackCheckbox').checked,
+            };
+            ipcRenderer.send('update-checkboxes', checkboxStates);
+        };
+
+        document.getElementById('fountainCheckbox').addEventListener('change', updateCheckboxState);
+        document.getElementById('wisdomCheckbox').addEventListener('change', updateCheckboxState);
+        document.getElementById('pullCheckbox').addEventListener('change', updateCheckboxState);
+        document.getElementById('stackCheckbox').addEventListener('change', updateCheckboxState);
     </script>
 </body>
 </html>
