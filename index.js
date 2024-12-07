@@ -233,17 +233,26 @@ function startSoundEvents() {
         console.log('New client connected.');
         client.on('map:clock_time', (clock_time) => {
             console.log(`Clock Time: ${clock_time}`);
-            if (soundEnabled.fountain && fountainPlayTimes.includes(clock_time)) {
+
+            // Ensure there is at least one open window before sending data
+            const windows = BrowserWindow.getAllWindows();
+            if (windows.length > 0) {
+                console.log(`Sending clock_time: ${clock_time} to renderer.`); // Add this line for verification
+                windows[0].webContents.send('update-clock-time', clock_time);
+            }
+
+            // Play sounds if clock_time matches play times
+            if (fountainPlayTimes.includes(clock_time)) {
                 sound.play("F:\\Ilan\\DotaListener\\dota2-gsi\\file2.mp3");
             }
-            if (soundEnabled.wisdom && filePlayTimes.includes(clock_time)) {
+            if (filePlayTimes.includes(clock_time)) {
                 sound.play("F:\\Ilan\\DotaListener\\dota2-gsi\\file.mp3");
             }
-            if (soundEnabled.pull && pullPlayTimes.includes(clock_time)) {
-                sound.play("F:\\Ilan\\DotaListener\\dota2-gsi\\pull.mp3");
-            }
-            if (soundEnabled.stack && stackPlayTimes.includes(clock_time)) {
+            if (stackPlayTimes.includes(clock_time)) {
                 sound.play("F:\\Ilan\\DotaListener\\dota2-gsi\\stack.mp3");
+            }
+            if (pullPlayTimes.includes(clock_time)) {
+                sound.play("F:\\Ilan\\DotaListener\\dota2-gsi\\pull.mp3");
             }
         });
     });

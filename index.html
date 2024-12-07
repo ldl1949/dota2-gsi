@@ -3,6 +3,31 @@
 <head>
     <title>Sound Time Intervals</title>
     <style>
+        .clock-time-container {
+            text-align: center;
+            margin-top: 20px;
+            background: linear-gradient(45deg, orange, purple);
+            padding: 2px 10px; /* Further reduced padding */
+            border-radius: 10px;
+            color: white;
+            font-family: 'Poppins', sans-serif; /* Nice modern font */
+            font-weight: bold;
+            font-size: 1.2em; /* Compact font size */
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Subtle depth */
+            width: fit-content;
+            line-height: 1.2; /* Ensure compact line spacing */
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+            display: inline-block; /* Ensures compact fit */
+        }
+
+
+
+
+
+
+
         body {
             font-family: Arial, sans-serif;
             background-image: url('./background.png'); /* Path to your image */
@@ -91,8 +116,19 @@
         </label>
     </div>
 
+    <div class="clock-time-container">
+        <h2>Clock Time: <span id="clockTime">0</span></h2>
+    </div>
+
+
     <script>
         const { ipcRenderer } = require('electron');
+
+        // Listen for clock time updates
+        ipcRenderer.on('update-clock-time', (event, clock_time) => {
+            console.log(`Updating clock time in UI: ${clock_time}`);
+            document.getElementById('clockTime').innerText = clock_time;
+        });
 
         // Event listeners for game mode buttons
         document.getElementById('rankedButton').addEventListener('click', () => {
