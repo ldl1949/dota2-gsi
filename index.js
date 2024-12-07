@@ -234,11 +234,16 @@ function startSoundEvents() {
         client.on('map:clock_time', (clock_time) => {
             console.log(`Clock Time: ${clock_time}`);
 
-            // Ensure there is at least one open window before sending data
+            // Format the time
+            const minutes = Math.floor(clock_time / 60);
+            const seconds = Math.abs(clock_time % 60); // Handle negative clock times (e.g., pre-game)
+            const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+            // Send the formatted time to the renderer
             const windows = BrowserWindow.getAllWindows();
             if (windows.length > 0) {
-                console.log(`Sending clock_time: ${clock_time} to renderer.`); // Add this line for verification
-                windows[0].webContents.send('update-clock-time', clock_time);
+                console.log(`Sending clock_time: ${formattedTime} to renderer.`);
+                windows[0].webContents.send('update-clock-time', formattedTime);
             }
 
             // Play sounds if clock_time matches play times
@@ -257,6 +262,7 @@ function startSoundEvents() {
         });
     });
 }
+
 
 
 // Function to create the main application window
